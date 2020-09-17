@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+git checkout origin/config config.h
+
+make
+make DESTDIR="$1" install
