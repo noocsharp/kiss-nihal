@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+# uses the program 'true' to build info pages: it doesn't build pages (as
+# desired), and exits with 0 so that the build succeeds.
+export MAKEINFO=true
+autoreconf -i
+
+./configure \
+    --prefix=/usr \
+    --disable-nls \
+    --with-tls=libtls
+    
+make
+make DESTDIR="$1" install
