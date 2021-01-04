@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+# shellcheck disable=SC2016
+sed -i 's/$(MAKE) -C gitweb install//' Makefile
+
 export CFLAGS="$CFLAGS -static"
 
 cat > config.mak <<EOF
