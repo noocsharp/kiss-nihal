@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+export MAKEFLAGS=-j4
+
+./configure \
+    --prefix=/usr
+
+make
+make DESTDIR="$1" install
+
+rm "$1/sbin/mount.ntfs-3g"
+ln -s /usr/bin/ntfs-3g "$1/sbin/mount.ntfs"
