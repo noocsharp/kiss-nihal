@@ -1,0 +1,10 @@
+cmake make
+eudev make
+gtest make
+go make
+protobuf
+pcre2 make
+perl make
+libusb make
+brotli
+lz4

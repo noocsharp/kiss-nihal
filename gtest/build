@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+for patch in *.patch; do
+   patch -Np1 -i "$patch"
+done
+
+sed -E "s|(GOOGLETEST_VERSION) [0-9\\.]+|\\1 1.10.0|" -i CMakeLists.txt
+
+cmake -B build . \
+    -DCMAKE_BUILD_TYPE=None \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DBUILD_SHARED_LIBS=ON \
+    -Dgtest_build_tests=OFF
+
+make -C build
+make -C build DESTDIR="$1" install
+
+find "$1" -name '*.pump' -print -delete
