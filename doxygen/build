@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+mkdir build
+
+cmake -B build \
+-DCMAKE_INSTALL_PREFIX="$1/usr" \
+-DFLAG=1
+
+cmake --build   build
+cmake --install build
