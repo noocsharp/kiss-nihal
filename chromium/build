@@ -1,5 +1,7 @@
 #!/bin/sh
 
+pkgname="chromium"
+
 for patch in patches/*
 do
     echo "Applying $patch"
@@ -21,7 +23,6 @@ use_system="
     libpng
     libwebp
     libxml
-    libxslt
     opus
     "
 for _lib in $use_system libjpeg_turbo; do
@@ -57,7 +58,55 @@ CC="${CC:-clang}" CXX="${CXX:-clang++}" LD="${CXX:-clang++}" \
     python2 tools/gn/bootstrap/bootstrap.py -s -v --gn-gen-args "$_c"
 
 AR="ar" CC="clang" CXX="clang++" LD="clang++" NM=/usr/bin/nm \
-    out/Release/gn gen out/Release --args="blink_symbol_level=0 clang_use_chrome_plugins=false custom_toolchain=\"//build/toolchain/linux/unbundle:default\" enable_hangout_services_extension=true enable_nacl_nonsfi=false enable_nacl=false enable_precompiled_headers=false fatal_linker_warnings=false ffmpeg_branding=\"Chrome\" fieldtrial_testing_like_official_build=true gold_path=\"/usr/bin/ld.gold\" host_toolchain=\"//build/toolchain/linux/unbundle:default\" icu_use_data_file=true is_clang=true is_component_build=false is_debug=false is_desktop_linux=true proprietary_codecs=false symbol_level=0 treat_warnings_as_errors=false use_allocator_shim=false use_allocator=\"none\" use_cups=false use_custom_libcxx=false use_gnome_keyring=false use_gold=false use_lld=false use_pulseaudio=false use_sysroot=false use_system_harfbuzz=true enable_js_type_check=false" --script-executable=python2
+    out/Release/gn gen out/Release --args="blink_symbol_level=0 clang_use_chrome_plugins=false custom_toolchain=\"//build/toolchain/linux/unbundle:default\" enable_hangout_services_extension=true enable_nacl_nonsfi=false enable_nacl=false enable_precompiled_headers=false fatal_linker_warnings=false ffmpeg_branding=\"Chrome\" fieldtrial_testing_like_official_build=true gold_path=\"/usr/bin/ld.gold\" host_toolchain=\"//build/toolchain/linux/unbundle:default\" icu_use_data_file=true is_clang=true is_component_build=false is_debug=false is_desktop_linux=true proprietary_codecs=false symbol_level=0 treat_warnings_as_errors=false use_allocator_shim=false use_allocator=\"none\" use_cups=false use_custom_libcxx=false use_gnome_keyring=false use_gold=false use_lld=false use_pulseaudio=false use_sysroot=false use_system_harfbuzz=true enable_js_type_check=false use_kerberos=false" --script-executable=python2
 
 ninja -C out/Release chrome chrome_sandbox chromedriver
-ninja -C out/Release install
+
+cd out/Release
+
+for bin in chrome chromedriver *.bin; do
+    install -Dm755 $bin "$1"/usr/lib/$pkgname/$bin
+done
+
+install -Dm755 swiftshader/libEGL.so "$1"/usr/lib/$pkgname/swiftshader/libEGL.so
+install -Dm755 swiftshader/libGLESv2.so "$1"/usr/lib/$pkgname/swiftshader/libGLESv2.so
+
+install -Dm4755 chrome_sandbox "$1"/usr/lib/$pkgname/chrome-sandbox
+install -m644 icudtl.dat "$1"/usr/lib/$pkgname/icudtl.dat
+
+install -Dm755 xdg-mime "$1"/usr/lib/$pkgname/xdg-mime
+install -Dm755 xdg-settings "$1"/usr/lib/$pkgname/xdg-settings
+
+for pak in *.pak; do
+    install -Dm644 "$pak" "$1/usr/lib/$pkgname/$pak"
+done
+
+install -Dm755 chromium-launcher.sh \
+    "$1"/usr/lib/$pkgname/chromium-launcher.sh
+
+cp -a locales "$1"/usr/lib/$pkgname/
+cp -a MEIPreload "$1"/usr/lib/$pkgname/
+
+# It is important that we name the target "chromium-browser",
+# xdg-utils expect it; bug #355517.
+mkdir -p "$1"/usr/bin
+cd "$1"/usr/bin
+ln -sf /usr/lib/$pkgname/chromium-launcher.sh chromium-browser
+ln -sf /usr/lib/$pkgname/chromedriver "$1"/usr/bin/
+
+install -Dm644 chromium.conf \
+    "$1"/etc/chromium/chromium.conf
+
+install -Dm644 chromium.desktop \
+    "$1"/usr/share/applications/chromium.desktop
+
+cd "$builddir"
+for size in 24 48 64 128 256; do
+    install -Dm644 "chrome/app/theme/chromium/product_logo_$size.png" \
+        "$1/usr/share/icons/hicolor/"$size"x"$size"/apps/chromium.png"
+done
+
+for size in 16 32; do
+    install -Dm644 "chrome/app/theme/default_100_percent/chromium/product_logo_$size.png" \
+        "$1/usr/share/icons/hicolor/"$size"x"$size"/apps/chromium.png"
+done
