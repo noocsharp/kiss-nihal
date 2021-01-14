@@ -1,0 +1,2 @@
+To build chromium, the pciutils package from this repo must be installed as it
+include headers that the community version doesn't. Other than that, it should build just by running `kiss b chromium`. If it doesn't lmk or send me patches

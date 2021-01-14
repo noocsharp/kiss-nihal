@@ -1,0 +1,10 @@
+--- a/ui/ozone/ozone.gni.orig	2021-01-11 10:40:05.842272939 -0600
++++ b/ui/ozone/ozone.gni	2021-01-11 10:40:22.326273215 -0600
+@@ -71,7 +71,6 @@
+       ozone_platform_x11 = true
+     } else if (is_desktop_linux) {
+       ozone_platform = "x11"
+-      ozone_platform_wayland = true
+       ozone_platform_x11 = true
+     } else if (is_win) {
+       ozone_platform = "windows"
