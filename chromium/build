@@ -2,10 +2,10 @@
 
 pkgname="chromium"
 
-for patch in patches/*
+for patch in *.patch
 do
     echo "Applying $patch"
-    patch -p1 < $patch
+    patch -p1 < "$patch"
 done
 
 mkdir -p third_party/node/linux/node-linux-x64/bin

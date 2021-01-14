@@ -16,3 +16,4 @@ libjpeg-turbo
 libpng
 libwebp
 libxml2
+libxkbcommon
