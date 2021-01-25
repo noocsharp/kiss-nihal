@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+make SFEED_THEME=blue
+make \
+    DESTDIR="$1" \
+    PREFIX=/usr \
+    MANPREFIX=/usr/share/man \
+    install
