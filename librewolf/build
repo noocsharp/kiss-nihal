@@ -5,14 +5,34 @@ do
     patch -p1 < "$p"
 done
 
-# install librewolf branding
-cp -r common/source_files/* ./
-
+rm -f common/source_files/mozconfig
 
 # Remove libc header which conflicts with 7 or so Linux
 # kernel headers. See: https://github.com/kisslinux/repo/issues/207
 sed -i '/net\/if/d' \
     dom/media/webrtc/transport/third_party/nICEr/src/stun/addrs-netlink.c
+
+# Disabling Pocket
+sed -i "s/'pocket'/#'pocket'/g" browser/components/moz.build
+sed -i 's#SaveToPocket.init();#// SaveToPocket.init();#g' browser/components/BrowserGlue.jsm
+
+# Remove Internal Plugin Certificates
+_cert_sed="s#if (aCert.organizationalUnit == \"Mozilla [[:alpha:]]\+\") {\n"
+_cert_sed="${_cert_sed}[[:blank:]]\+return AddonManager\.SIGNEDSTATE_[[:upper:]]\+;\n"
+_cert_sed="${_cert_sed}[[:blank:]]\+}#"
+_cert_sed="${_cert_sed}// NOTE: removed#g"
+sed -z "$_cert_sed" -i toolkit/mozapps/extensions/internal/XPIInstall.jsm
+
+# allow SearchEngines option in non-ESR builds
+sed -i 's#"enterprise_only": true,#"enterprise_only": false,#g' browser/components/enterprisepolicies/schemas/policies-schema.json
+
+_settings_services_sed='s#firefox.settings.services.mozilla.com#f.s.s.m.c.qjz9zk#g'
+
+# stop some undesired requests (https://gitlab.com/librewolf-community/browser/common/-/issues/10)
+sed "$_settings_services_sed" -i browser/components/newtab/data/content/activity-stream.bundle.js
+sed "$_settings_services_sed" -i modules/libpref/init/all.js
+sed "$_settings_services_sed" -i services/settings/Utils.jsm
+sed "$_settings_services_sed" -i toolkit/components/search/SearchUtils.jsm
 
 # Build autoconf 2.13 for Firefox's sole use.
 # See: https://bugzilla.mozilla.org/show_bug.cgi?id=104642
@@ -46,14 +66,12 @@ export PATH="$PWD/junk/bin:$PATH"
 export CC="${CC:-/usr/bin/cc}"
 export CXX="${CXX:-/usr/bin/c++}"
 
-export LDFLAGS="$LDFLAGS -Wl,-rpath=/usr/lib/firefox"
+export LDFLAGS="$LDFLAGS -Wl,-rpath=/usr/lib/librewolf"
 export RUSTFLAGS="$RUSTFLAGS -Cdebuginfo=0"
 
 export MACH_USE_SYSTEM_PYTHON=1
 export MOZ_DEBUG_FLAGS=-g0
 export MOZ_NOSPAM=1
-export MOZ_TELEMETRY_REPORTING=0
-export MOZ_SERVICES_HEALTHREPORT=0
 
 ./mach configure \
     --prefix=/usr \
@@ -99,11 +117,11 @@ DESTDIR="$1" ./mach install
 
 # Remove a lot of uneeded "stuff".
 rm -rf "$1/usr/include"
-rm -rf "$1/usr/lib/firefox-devel"
+rm -rf "$1/usr/lib/librewolf-devel"
 rm -rf "$1/usr/share/idl"
-rm -rf "$1/usr/lib/firefox/gtk2" # Drop GTK+2 runtime dependency.
-rm -f  "$1/usr/lib/firefox/browser/features/fxmonitor@mozilla.org.xpi"
-rm -f  "$1/usr/lib/firefox/browser/features/screenshots@mozilla.org.xpi"
-rm -f  "$1/usr/lib/firefox/browser/features/webcompat-reporter@mozilla.org.xpi"
-rm -f  "$1/usr/lib/firefox/browser/features/webcompat@mozilla.org.xpi"
-rm -f  "$1/usr/lib/firefox/browser/features/doh-rollout@mozilla.org.xpi"
+rm -rf "$1/usr/lib/librewolf/gtk2" # Drop GTK+2 runtime dependency.
+rm -f  "$1/usr/lib/librewolf/browser/features/fxmonitor@mozilla.org.xpi"
+rm -f  "$1/usr/lib/librewolf/browser/features/screenshots@mozilla.org.xpi"
+rm -f  "$1/usr/lib/librewolf/browser/features/webcompat-reporter@mozilla.org.xpi"
+rm -f  "$1/usr/lib/librewolf/browser/features/webcompat@mozilla.org.xpi"
+rm -f  "$1/usr/lib/librewolf/browser/features/doh-rollout@mozilla.org.xpi"
