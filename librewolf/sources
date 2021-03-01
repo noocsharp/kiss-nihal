@@ -1,0 +1,7 @@
+https://archive.mozilla.org/pub/firefox/releases/86.0/source/firefox-86.0.source.tar.xz
+https://ftp.gnu.org/gnu/autoconf/autoconf-2.13.tar.gz autoconf2.13/
+https://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz yasm/
+https://gitlab.com/librewolf-community/browser/linux/-/archive/v86.0-1/linux-v86.0-1.tar.gz
+git+https://gitlab.com/librewolf-community/browser/common.git common
+git+https://gitlab.com/librewolf-community/settings.git#c5c75a39dd91a8772255a78493853be6553262b2 settings
+patches/no-gtk2.patch
