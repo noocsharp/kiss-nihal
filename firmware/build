@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+install -Dm644 intel-ucode/06-8e-09 "$1/usr/lib/firmware/intel-06-8e-09.ucode"
+cp iwlwifi-8000C*.ucode "$1/usr/lib/firmware/"
+mkdir -p "$1/usr/lib/firmware/i915"
+cp kbl_dmc_*.bin "$1/usr/lib/firmware/i915/"
