@@ -1,0 +1,5 @@
+git+https://github.com/michaelforney/swc.git@intel-tiling
+files/restacking.patch
+files/popup.patch
+files/subsurface.patch
+files/defer.patch

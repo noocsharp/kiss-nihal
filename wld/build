@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+make ENABLE_DRM=0
+make PREFIX="/usr" DESTDIR="$1" install

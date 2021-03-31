@@ -6,6 +6,7 @@ do
 done
 
 rm -f common/source_files/mozconfig
+cp -r common/source_files/* ./
 
 # Remove libc header which conflicts with 7 or so Linux
 # kernel headers. See: https://github.com/kisslinux/repo/issues/207
@@ -17,11 +18,7 @@ sed -i "s/'pocket'/#'pocket'/g" browser/components/moz.build
 sed -i 's#SaveToPocket.init();#// SaveToPocket.init();#g' browser/components/BrowserGlue.jsm
 
 # Remove Internal Plugin Certificates
-_cert_sed="s#if (aCert.organizationalUnit == \"Mozilla [[:alpha:]]\+\") {\n"
-_cert_sed="${_cert_sed}[[:blank:]]\+return AddonManager\.SIGNEDSTATE_[[:upper:]]\+;\n"
-_cert_sed="${_cert_sed}[[:blank:]]\+}#"
-_cert_sed="${_cert_sed}// NOTE: removed#g"
-sed -z "$_cert_sed" -i toolkit/mozapps/extensions/internal/XPIInstall.jsm
+sed "/if (aCert.organizationalUnit/,+3d" -i toolkit/mozapps/extensions/internal/XPIInstall.jsm
 
 # allow SearchEngines option in non-ESR builds
 sed -i 's#"enterprise_only": true,#"enterprise_only": false,#g' browser/components/enterprisepolicies/schemas/policies-schema.json
@@ -83,9 +80,10 @@ export MOZ_NOSPAM=1
     --enable-application=browser \
     --enable-release \
     --enable-alsa \
+    --enable-default-toolkit=cairo-gtk3-wayland \
     --with-app-name=librewolf \
     --with-app-basename=Librewolf \
-    --with-branding-browser=browser/branding/librewolf \
+    --with-branding=browser/branding/librewolf \
     --without-system-nspr \
     --without-system-nss \
     --with-system-jpeg \
@@ -114,6 +112,8 @@ export MOZ_NOSPAM=1
 
 ./mach build
 DESTDIR="$1" ./mach install
+
+cp -r settings/* "$1/usr/lib/librewolf/"
 
 # Remove a lot of uneeded "stuff".
 rm -rf "$1/usr/include"
