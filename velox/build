@@ -2,5 +2,5 @@
 
 sed -i "s/Terminus/Noto Sans Mono/" clients/status_bar.c
 
-make
+make PREFIX=/usr
 make PREFIX=/usr DESTDIR="$1" install
