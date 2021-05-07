@@ -1,8 +1,8 @@
-https://archive.mozilla.org/pub/firefox/releases/87.0/source/firefox-87.0.source.tar.xz
+https://archive.mozilla.org/pub/firefox/releases/88.0/source/firefox-88.0.source.tar.xz
 https://ftp.gnu.org/gnu/autoconf/autoconf-2.13.tar.gz autoconf2.13/
 https://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz yasm/
-https://gitlab.com/librewolf-community/browser/linux/-/archive/v87.0-1/linux-v87.0-1.tar.gz
+https://gitlab.com/librewolf-community/browser/linux/-/archive/v88.0-1/linux-v88.0-1.tar.gz
 git+https://gitlab.com/librewolf-community/browser/common.git common
-git+https://gitlab.com/librewolf-community/settings.git#b27477ceb969e5edb4bc84b680f6e7041dc11e08 settings
+git+https://gitlab.com/librewolf-community/settings.git#82cce8b42a14cc85196fd4f496181cf6b241dce0 settings
 patches/no-gtk2.patch
 patches/disable-minidump.patch

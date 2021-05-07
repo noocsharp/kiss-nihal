@@ -3,7 +3,7 @@ atk
 bzip2
 cairo
 cbindgen      make
-clang         make
+clang      make
 expat
 ffmpeg
 fontconfig
