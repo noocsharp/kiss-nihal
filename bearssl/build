@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+make
+
+mkdir -p "$1/usr/bin"
+mkdir -p "$1/usr/lib"
+mkdir -p "$1/usr/include"
+
+cp build/brssl "$1/usr/bin"
+chmod 755 "$1/usr/bin/brssl"
+
+cp build/libbearssl.a "$1/usr/lib"
+chmod 644 "$1/usr/lib/libbearssl.a"
+
+cp build/libbearssl.so "$1/usr/lib"
+chmod 644 "$1/usr/lib/libbearssl.a"
+
+cp inc/* "$1/usr/include"
+chmod 644 "$1/usr/include"/*
