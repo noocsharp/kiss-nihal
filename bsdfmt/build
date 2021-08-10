@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+cc fmt.c -o fmt
+
+mkdir -p "$1/usr/bin"
+cp fmt "$1/usr/bin/fmt"
+chmod 755 "$1/usr/bin/fmt"
+
+mkdir -p "$1/usr/share/man/man1"
+cp fmt.1 "$1/usr/share/man/man1/fmt.1"
+chmod 755 "$1/usr/share/man/man1/fmt.1"
