@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --disable-pgp \
+    --disable-nls
+
+make
+make DESTDIR="$1" install
+
+rm -f "$1/etc/mime.types"
+rm -f "$1/usr/bin/muttbug"
