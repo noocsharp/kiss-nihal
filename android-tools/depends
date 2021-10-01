@@ -1,5 +1,5 @@
 cmake make
-eudev make
+libudev-zero make
 gtest make
 go make
 protobuf
